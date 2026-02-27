@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { calculate, getRandomMotivation, getTip } from '@/lib/calculator';
 import { CalculatorResult, Gender, Activity, Goal } from '@/lib/models';
 
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-diet`;
+
 const activityOptions = [
   { value: 'sedentary' as Activity, label: 'Sedentario', desc: 'Sin ejercicio', factor: '×1.2' },
   { value: 'light' as Activity, label: 'Ligero', desc: '1-3 días/semana', factor: '×1.375' },
@@ -26,6 +28,70 @@ export function Calculator() {
   const [result, setResult] = useState<CalculatorResult | null>(null);
   const [motivation, setMotivation] = useState('');
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [dietPlan, setDietPlan] = useState('');
+  const [dietLoading, setDietLoading] = useState(false);
+
+  const generateDiet = async () => {
+    if (!result) return;
+    setDietLoading(true);
+    setDietPlan('');
+
+    try {
+      const resp = await fetch(CHAT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          calories: result.target,
+          protein_g: result.protein_g,
+          carbs_g: result.carbs_g,
+          fat_g: result.fat_g,
+          goal: result.goal,
+        }),
+      });
+
+      if (!resp.ok || !resp.body) {
+        const errData = await resp.json().catch(() => ({}));
+        setDietPlan(`❌ Error: ${errData.error || 'No se pudo generar la dieta'}`);
+        setDietLoading(false);
+        return;
+      }
+
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let accumulated = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        let newlineIndex: number;
+        while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
+          let line = buffer.slice(0, newlineIndex);
+          buffer = buffer.slice(newlineIndex + 1);
+          if (line.endsWith('\r')) line = line.slice(0, -1);
+          if (!line.startsWith('data: ')) continue;
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === '[DONE]') break;
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content;
+            if (content) {
+              accumulated += content;
+              setDietPlan(accumulated);
+            }
+          } catch { /* partial JSON */ }
+        }
+      }
+    } catch (e) {
+      setDietPlan('❌ Error al conectar con el servicio de IA');
+    }
+    setDietLoading(false);
+  };
 
   const isInvalid = (field: string, value: string, min: number, max: number) => {
     if (!touched[field]) return false;
@@ -220,6 +286,24 @@ export function Calculator() {
                 <div className="p-4 rounded-lg bg-secondary/10 border border-secondary/20 text-center">
                   <p className="text-sm text-foreground">✨ {motivation}</p>
                 </div>
+
+                {/* AI Diet Generation */}
+                <button
+                  onClick={generateDiet}
+                  disabled={dietLoading}
+                  className="btn-primary btn-full"
+                >
+                  {dietLoading ? '🤖 Generando dieta con IA...' : '🤖 Generar dieta con IA →'}
+                </button>
+
+                {dietPlan && (
+                  <div className="p-5 rounded-xl bg-muted border border-border animate-fade-in-up">
+                    <h4 className="font-display text-lg font-bold text-foreground mb-3">🍽️ Tu Plan de Dieta</h4>
+                    <div className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                      {dietPlan}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
