@@ -8,7 +8,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 import ObesityIdentifier from "./pages/ObesityIdentifier";
-import BodySimulator from "./pages/BodySimulator";
+import AdaptiveTrainer from "./pages/AdaptiveTrainer";
 import VirtualCoach from "./pages/VirtualCoach";
 
 const queryClient = new QueryClient();
@@ -23,7 +23,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/obesity-identifier" element={<ObesityIdentifier />} />
-            <Route path="/body-simulator" element={<BodySimulator />} />
+            <Route path="/adaptive-trainer" element={<AdaptiveTrainer />} />
             <Route path="/virtual-coach" element={<VirtualCoach />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

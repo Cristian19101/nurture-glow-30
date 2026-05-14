@@ -53,8 +53,8 @@ export function Navbar() {
           <Link to="/obesity-identifier" className="text-muted-foreground hover:text-foreground transition-colors no-underline font-body text-sm">
             Identificador de Obesidad
           </Link>
-          <Link to="/body-simulator" className="text-muted-foreground hover:text-foreground transition-colors no-underline font-body text-sm">
-            Simulador
+          <Link to="/adaptive-trainer" className="text-muted-foreground hover:text-foreground transition-colors no-underline font-body text-sm">
+            Entrenador IA
           </Link>
           <Link to="/virtual-coach" className="text-muted-foreground hover:text-foreground transition-colors no-underline font-body text-sm">
             Coach IA
@@ -105,7 +105,7 @@ export function Navbar() {
           <button onClick={() => scrollTo('calculator')} className="text-left text-muted-foreground hover:text-foreground bg-transparent border-none cursor-pointer py-2">Calculadora</button>
           <button onClick={() => scrollTo('exclusivo')} className="text-left text-muted-foreground hover:text-foreground bg-transparent border-none cursor-pointer py-2">Contenido</button>
           <Link to="/obesity-identifier" onClick={() => setMenuOpen(false)} className="text-left text-muted-foreground hover:text-foreground no-underline py-2 block">Identificador de Obesidad</Link>
-          <Link to="/body-simulator" onClick={() => setMenuOpen(false)} className="text-left text-muted-foreground hover:text-foreground no-underline py-2 block">Simulador Corporal</Link>
+          <Link to="/adaptive-trainer" onClick={() => setMenuOpen(false)} className="text-left text-muted-foreground hover:text-foreground no-underline py-2 block">Entrenador Adaptativo</Link>
           <Link to="/virtual-coach" onClick={() => setMenuOpen(false)} className="text-left text-muted-foreground hover:text-foreground no-underline py-2 block">Coach Virtual IA</Link>
           <button onClick={() => scrollTo('about')} className="text-left text-muted-foreground hover:text-foreground bg-transparent border-none cursor-pointer py-2">Acerca de</button>
           <div className="flex gap-3 pt-2">
