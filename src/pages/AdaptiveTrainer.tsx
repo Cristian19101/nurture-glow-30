@@ -193,10 +193,14 @@ export default function AdaptiveTrainer() {
                 <span className="text-xs text-muted-foreground uppercase tracking-wider">{f.label}</span>
                 <input
                   type="number"
-                  value={f.value}
+                  inputMode="numeric"
+                  value={f.value === 0 ? '' : f.value}
                   min={f.min}
                   max={f.max}
-                  onChange={e => f.set(Number(e.target.value))}
+                  onChange={e => {
+                    const v = e.target.value;
+                    f.set(v === '' ? 0 : Number(v));
+                  }}
                   className="mt-1 w-full bg-background/60 border border-border rounded-xl px-4 py-3 text-foreground focus:border-primary focus:outline-none transition"
                 />
               </label>
