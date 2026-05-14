@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/lib/auth";
 import { ToastProvider } from "@/lib/toast-context";
 import { ToastContainer } from "@/components/ToastContainer";
+import { ScrollManager } from "@/components/ScrollManager";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -18,6 +19,7 @@ const App = () => (
     <AuthProvider>
       <ToastProvider>
         <BrowserRouter>
+          <ScrollManager />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
