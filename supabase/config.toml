@@ -2,3 +2,6 @@ project_id = "ymiuachrkkairsxzfmxt"
 
 [functions.generate-diet]
 verify_jwt = false
+
+[functions.virtual-coach]
+verify_jwt = false
