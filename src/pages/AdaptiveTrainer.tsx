@@ -63,6 +63,7 @@ const EXERCISE_LIBRARY: Exercise[] = [
 
 function calcBMI(weight: number, heightCm: number) {
   const h = heightCm / 100;
+  if (!h || !weight || h <= 0 || weight <= 0) return 0;
   return weight / (h * h);
 }
 
